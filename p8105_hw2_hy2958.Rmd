@@ -43,10 +43,21 @@ snp =
   mutate (year=year+2000) %>%
   mutate (year=case_when (year>2025 ~ year-100, year<=2025 ~ year)) %>%
   select (-day) %>% 
+  mutate (month = case_when(
+    month == 1 ~ "January",
+    month == 2 ~ "February",
+    month == 3 ~ "March",
+    month == 4 ~ "April",
+    month == 5 ~ "May",
+    month == 6 ~ "June",
+    month == 7 ~ "July",
+    month == 8 ~ "August",
+    month == 9 ~ "September",
+    month == 10 ~ "October",
+    month == 11 ~ "November",
+    month == 12 ~ "December")) %>% 
   relocate(year)
-  
-  
-  
 
 ```
+
 
