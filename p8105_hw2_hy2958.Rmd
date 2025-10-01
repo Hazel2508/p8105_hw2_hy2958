@@ -7,7 +7,7 @@ output: github_document
 library(tidyverse)
 ```
 
-problem 1
+problem 1.1
 
 ```{r}
 polsmonth = 
@@ -32,5 +32,21 @@ polsmonth =
     prez_dem == 1 ~ "democratic")) %>% 
   select (-prez_gop, -prez_dem, -day)
   
+```
+problem 1.2
+
+```{r}
+snp = 
+  read_csv("./data/fivethirtyeight_datasets/snp.csv") %>% 
+  janitor::clean_names() %>% 
+  separate(date, into = c("month", "day", "year"), sep='/', convert = TRUE)  %>% 
+  mutate (year=year+2000) %>%
+  mutate (year=case_when (year>2025 ~ year-100, year<=2025 ~ year)) %>%
+  select (-day) %>% 
+  relocate(year)
+  
+  
+  
+
 ```
 
