@@ -5,6 +5,7 @@ output: github_document
 
 ```{r setup}
 library(tidyverse)
+library(readxl)
 ```
 
 problem 1.1
@@ -108,3 +109,28 @@ summary(unemployment)
 
 
 The result data (822 observations) include the status of political party from 1947 to 2015 and the economic status each month such as unemployment rate, stock market index which can be used to discover the relation between political party and economic status.
+
+
+Problem 2
+
+
+```{r}
+mrtrashweel = read_excel("./data/Trash.xlsx", na = c("", "NA", "N/A"), sheet = 1, skip = 1) %>% 
+  janitor::clean_names() %>%
+  filter(!is.na(dumpster)) %>%
+  mutate(
+    sports_balls = as.integer(round(sports_balls))
+  )
+```
+
+```{r}
+ProfessorTrashWheel = read_excel("./data/Trash.xlsx", na = c("", "NA", "N/A"), sheet = 2, skip = 1) %>% 
+  janitor::clean_names() %>%
+  filter(!is.na(dumpster)) 
+```
+
+```{r}
+Gwynnda = read_excel("./data/Trash.xlsx", na = c("", "NA", "N/A"), sheet = 4, skip = 1) %>% 
+  janitor::clean_names() %>%
+  filter(!is.na(dumpster)) 
+```
