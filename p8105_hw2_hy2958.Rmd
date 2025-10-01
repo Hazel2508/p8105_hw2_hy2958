@@ -10,7 +10,7 @@ library(tidyverse)
 problem 1.1
 
 ```{r}
-polsmonth = 
+pols = 
   read_csv("./data/fivethirtyeight_datasets/pols-month.csv") %>% 
   janitor::clean_names() %>% 
   separate(mon, into = c("year", "month", "day"), sep='-', convert = TRUE)  %>% 
@@ -60,4 +60,34 @@ snp =
 
 ```
 
+problem 1.3
+
+```{r}
+unemployment = 
+  read_csv("./data/fivethirtyeight_datasets/unemployment.csv") %>% 
+  janitor::clean_names() %>%
+  pivot_longer(
+    jan:dec,
+    names_to = "month", 
+    values_to = "unemployment_pec") %>% 
+    mutate (month = case_when(
+    month == 'jan' ~ "January",
+    month == 'feb' ~ "February",
+    month == 'mar' ~ "March",
+    month == 'apr' ~ "April",
+    month == 'may' ~ "May",
+    month == 'jun' ~ "June",
+    month == 'jul' ~ "July",
+    month == 'aug' ~ "August",
+    month == 'sep' ~ "September",
+    month == 'oct' ~ "October",
+    month == 'nov' ~ "November",
+    month == 'dec' ~ "December"))
+```
+merge
+
+```{r}
+data=left_join (pols, snp, by = c ("year", "month"))
+data_final=left_join (data, unemployment,  by = c ("year", "month"))
+```
 
