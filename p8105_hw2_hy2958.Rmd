@@ -7,6 +7,7 @@ output: github_document
 library(tidyverse)
 library(readxl)
 library(lubridate)
+library(skimr)
 ```
 
 problem 1.1
@@ -199,4 +200,57 @@ zipcode =
   filter (!is.na(zori))
   
 ```
+merge the data
 
+```{r}
+
+Zori_final=left_join (ZORI, zipcode) %>% 
+relocate (zip_code, zori) 
+  
+```
+
+```{r}
+summary <- Zori_final %>% 
+  summarize(
+    unique_zipcodes = n_distinct(zip_code),
+    unique_neighborhoods = n_distinct(neighborhood)
+    )
+```
+
+find distinct zipcode
+
+```{r}
+
+missing_zips <- zipcode %>%
+  anti_join(ZORI, by = "zip_code")
+```
+
+
+In the tidy data, 10450 observations are included with 149 unique zip codes and 43 unique neighborhoods. It include variables indicate the location such as zip_code, county, neighborhood as well as the date and the Zillow Observed Rent Index which shows the rental price.
+
+There are 171 zip codes appear in the zipcode but didn't included in the Zillow Rental Price dataset which can be shown in the missing_zips data. They may be excluded because the missing value of neighborhood such as data for zipcode==10499, 10550.
+
+compare rental prices
+
+```{r}
+pricechange <- Zori_final %>% 
+  filter(
+    (year(date) == 2020 & month(date) == 1) | 
+    (year(date) == 2021 & month(date) == 1)
+  ) %>% 
+  pivot_wider(names_from = "date", values_from = "zori") %>% 
+  janitor::clean_names() %>% 
+  mutate(diff = x2021_01_31 - x2020_01_31)
+
+```
+
+top 10 price drop from 2020.01-2021.01
+```{r}
+top10 <- pricechange %>% 
+  select (county, zip_code, diff, neighborhood) %>% 
+  arrange(diff) %>% 
+  head(10)
+  
+```
+
+The largest rental price drop from 2020.01 to 2021.01 are mostly concentrated in New York County and within the lower Manhattan, Lower East Side, Gramercy Park and Murray Hill, Chelsea and Clinton and Greenwich Village and Soho. The largest drop is 912.5966 which is in lower Manhattan, New York, 10007.
