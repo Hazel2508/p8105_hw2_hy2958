@@ -6,6 +6,7 @@ output: github_document
 ```{r setup}
 library(tidyverse)
 library(readxl)
+library(lubridate)
 ```
 
 problem 1.1
@@ -165,4 +166,37 @@ trashtidy =
 The resulting datasheet include 1188 observations, include the "trashwheel" and "dumpster" to specify each dump, time variables such as "year", "month" and "date" and variables relate to the trash such as "weight_tons", "volume_cubic_yards" and the category such as plastic bottles, cigarette.
 
 The total weight of trash collected by Professor Trash Wheel is 282.26 tons. The total cigarette butts collected by Gwynnda in June of 2022 is 18120.
+
+problem 3
+
+```{r}
+zipcode = 
+  read_csv("./data/zillow_data/Zip Codes.csv") %>% 
+  janitor::clean_names()  %>% 
+  group_by(zip_code) %>% 
+  mutate(
+    has_conflict = n_distinct(county) > 1) %>% 
+  filter(!(has_conflict == TRUE & county == "New York")) %>% 
+  select(-has_conflict) %>% 
+  relocate(zip_code)
+```
+
+```{r}
+ ZORI= 
+  read_csv("./data/zillow_data/ZORI.csv") %>% 
+  janitor::clean_names() %>% 
+  rename (zip_code = region_name) %>% 
+  select (-region_type, -state_name) %>% 
+  rename (county = county_name) %>% 
+  mutate(county = str_remove(county, " County")) %>% 
+  ##delete dup zip with county
+  pivot_longer(
+    x2015_01_31:x2024_08_31,
+    names_to = "date", 
+    values_to = "zori") %>% 
+  mutate(date = ymd(gsub("x", "", date))) %>% 
+  relocate(zip_code) %>% 
+  filter (!is.na(zori))
+  
+```
 
